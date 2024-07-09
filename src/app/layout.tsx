@@ -19,7 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextUIProvider>
-          <main className="dark text-foreground bg-background">{children}</main>
+          <main className="dark text-foreground bg-background w-screen h-screen overflow-hidden">
+            {children}
+          </main>
         </NextUIProvider>
       </body>
     </html>
