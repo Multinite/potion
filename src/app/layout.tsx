@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NextUIProvider } from "@nextui-org/system";
+import { cn } from "@/components/cn/cn";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={cn(inter.className, 'overflow-hidden')}>
         <NextUIProvider>
           <main className="dark text-foreground bg-background w-screen h-screen overflow-hidden">
             {children}

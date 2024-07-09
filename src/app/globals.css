@@ -1,7 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
-  caret-color: var(--nextui-primary);
+  caret-color: hsl(var(--nextui-primary-500));
+}
+
+::-moz-selection {
+  /* Code for Firefox */
+  color: hsl(var(--nextui-primary-foreground));
+  background: hsl(var(--nextui-primary));
+}
+
+::selection {
+  color: hsl(var(--nextui-primary-foreground));
+  background: hsl(var(--nextui-primary));
+}
+
+.speed-test {
+  font-family: "Roboto Mono";
+}
+
+.speed-test::-moz-selection {
+  color: transparent;
+  background: hsl(var(--nextui-primary));
+}
+
+.speed-test::selection {
+  color: transparent;
+  background: hsl(var(--nextui-primary));
 }
