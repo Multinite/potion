@@ -1,136 +1,108 @@
-'use client'
+"use client";
+import { motion } from "framer-motion";
+import Logo from "@/../public/logo.webp";
+import MainNav from "@/components/navbar/Navbar";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import useSWR from "swr";
+import { Spinner } from "@nextui-org/react";
+import { cn } from "@/components/cn/cn";
+import useMeasure from "react-use-measure";
 
-import { TiptapCollabProvider } from '@hocuspocus/provider'
-import 'iframe-resizer/js/iframeResizer.contentWindow'
-import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react'
-import { Doc as YDoc } from 'yjs'
-
-import { BlockEditor } from '@/components/BlockEditor'
-import { createPortal } from 'react-dom'
-import { Surface } from '@/components/ui/Surface'
-import { Toolbar } from '@/components/ui/Toolbar'
-import { Icon } from '@/components/ui/Icon'
-
-export interface AiState {
-  isAiLoading: boolean
-  aiError?: string | null
-}
-
-const useDarkmode = () => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(
-    typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : false,
-  )
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = () => setIsDarkMode(mediaQuery.matches)
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [])
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode)
-  }, [isDarkMode])
-
-  const toggleDarkMode = useCallback(() => setIsDarkMode(isDark => !isDark), [])
-  const lightMode = useCallback(() => setIsDarkMode(false), [])
-  const darkMode = useCallback(() => setIsDarkMode(true), [])
-
-  return {
-    isDarkMode,
-    toggleDarkMode,
-    lightMode,
-    darkMode,
-  }
-}
-
-export default function Document({ params }: { params: { room: string } }) {
-  const { isDarkMode, darkMode, lightMode } = useDarkmode()
-  const [provider, setProvider] = useState<TiptapCollabProvider | null>(null)
-  const [collabToken, setCollabToken] = useState<string | null>(null)
-  const [aiToken, setAiToken] = useState<string | null>(null)
-  const searchParams = useSearchParams()
-
-  const hasCollab = parseInt(searchParams.get('noCollab') as string) !== 1
-
-  const { room } = params
-
-  useEffect(() => {
-    // fetch data
-    const dataFetch = async () => {
-      const data = await (
-        await fetch('/api/collaboration', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      ).json()
-
-      const { token } = data
-
-      // set state when the data received
-      setCollabToken(token)
-    }
-
-    dataFetch()
-  }, [])
-
-  useEffect(() => {
-    // fetch data
-    const dataFetch = async () => {
-      const data = await (
-        await fetch('/api/ai', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      ).json()
-
-      const { token } = data
-
-      // set state when the data received
-      setAiToken(token)
-    }
-
-    dataFetch()
-  }, [])
-
-  const ydoc = useMemo(() => new YDoc(), [])
-
-  useLayoutEffect(() => {
-    if (hasCollab && collabToken) {
-      setProvider(
-        new TiptapCollabProvider({
-          name: `${process.env.NEXT_PUBLIC_COLLAB_DOC_PREFIX}${room}`,
-          appId: process.env.NEXT_PUBLIC_TIPTAP_COLLAB_APP_ID ?? '',
-          token: collabToken,
-          document: ydoc,
-        }),
-      )
-    }
-  }, [setProvider, collabToken, ydoc, room, hasCollab])
-
-  if ((hasCollab && (!collabToken || !provider)) || !aiToken) return
-
-  const DarkModeSwitcher = createPortal(
-    <Surface className="flex items-center gap-1 fixed bottom-6 right-6 z-[99999] p-1">
-      <Toolbar.Button onClick={lightMode} active={!isDarkMode}>
-        <Icon name="Sun" />
-      </Toolbar.Button>
-      <Toolbar.Button onClick={darkMode} active={isDarkMode}>
-        <Icon name="Moon" />
-      </Toolbar.Button>
-    </Surface>,
-    document.body,
-  )
-
+export default function Home() {
   return (
-    <>
-      {DarkModeSwitcher}
-      <BlockEditor aiToken={aiToken} hasCollab={hasCollab} ydoc={ydoc} provider={provider} />
-    </>
-  )
+    <div className="w-full h-[calc(100vh-64px)] overflow-hidden">
+      <MainNav />
+      <main className="flex justify-center items-center flex-col w-full h-full">
+        <Image src={Logo} width={200} height={200} alt="logo" className="rounded-large" />
+        <div className="w-full h-full flex justify-center items-center">
+        </div>
+      </main>
+    </div>
+  );
 }
+// //@ts-ignore
+// const fetcher = (url) => fetch(url).then((res) => res.text());
+
+// function SpeedTestText() {
+//   const { data, error, isLoading } = useSWR("/api/chat", fetcher);
+
+//   const [currentCharIndex, $currentCharIndex] = useState(0);
+//   const [text, $text] = useState("");
+//   const [ref, bounds] = useMeasure();
+
+//   return (
+//     <div className="speed-test flex flex-col mt-32 w-[80vw] h-full relative text-3xl leading-10">
+//       {isLoading ? (
+//         <Spinner size="lg" color="primary" label="Loading..." />
+//       ) : (
+//         <>
+//           <motion.div
+//             className="absolute inset-0 text-foreground pointer-events-none select-non flex w-fit"
+//             draggable={false}
+//             animate={{ x: window.innerWidth / 2 - bounds.width - bounds.right }}
+//             ref={ref}
+//           >
+//             {text.split("").map((char, index) => (
+//               <motion.span
+//                 key={index} 
+//                 className={cn(
+//                   data?.split("")[index] === char ? "" : "text-danger",
+//                   "block min-w-[18.1px]"
+//                 )}
+//                 initial={{ x: -10, opacity: 1 }}
+//                 animate={{ x: 0, opacity: 1 }}
+//                 transition={{ type: "just", duration: 0.05 }}
+//               >
+//                 {char}
+//               </motion.span>
+//             ))}
+//           </motion.div>
+//           <motion.div
+//             contentEditable
+//             className="absolute inset-0 outline-none h-full text-transparent flex w-fit"
+//             spellCheck="false"
+//             suppressContentEditableWarning
+//             // animate={{ x: window.innerWidth / 2 - bounds.width - bounds.right }}
+//             onInput={(e) => {
+//               e.preventDefault();
+//               const txt = e.currentTarget.innerText;
+//               $text(txt);
+//               $currentCharIndex(txt.length);
+//             }}
+//           ></motion.div>
+//           <motion.div
+//             className="flex"
+//             animate={{ x: window.innerWidth / 2 - bounds.width - bounds.right }}
+
+//             // animate={{ x: -18.1 * currentCharIndex }}
+//           >
+//             {data?.split("").map((char, index) => {
+//               const userEnteredChar = text?.split("")[index];
+//               return (
+//                 <span
+//                   key={index}
+//                   className={cn(
+//                     currentCharIndex > index
+//                       ? "text-transparent"
+//                       : "text-foreground-500",
+//                     userEnteredChar !== char && userEnteredChar != undefined
+//                       ? "text-transparent"
+//                       : "",
+//                     "min-w-[18.1px] block"
+//                   )}
+//                 >
+//                   {userEnteredChar === char && userEnteredChar != undefined
+//                     ? char
+//                     : userEnteredChar != undefined
+//                     ? userEnteredChar
+//                     : char}
+//                 </span>
+//               );
+//             })}
+//           </motion.div>
+//         </>
+//       )}
+//     </div>
+//   );
+// }

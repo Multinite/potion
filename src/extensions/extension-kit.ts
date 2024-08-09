@@ -1,20 +1,14 @@
-'use client'
+"use client";
 
-import { HocuspocusProvider } from '@hocuspocus/provider'
-
-import { API } from '@/lib/api'
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import {
-  AiWriter,
-  AiImage,
   BlockquoteFigure,
   CharacterCount,
   Color,
   Document,
   Dropcursor,
-  Emoji,
   Figcaption,
-  FileHandler,
   Focus,
   FontFamily,
   FontSize,
@@ -30,7 +24,6 @@ import {
   Subscript,
   Superscript,
   Table,
-  TableOfContents,
   TableCell,
   TableHeader,
   TableRow,
@@ -39,39 +32,32 @@ import {
   TrailingNode,
   Typography,
   Underline,
-  emojiSuggestion,
   Columns,
   Column,
   TaskItem,
   TaskList,
-} from '.'
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
-import { ImageUpload } from './ImageUpload'
-import { TableOfContentsNode } from './TableOfContentsNode'
-import { lowlight } from 'lowlight'
+} from ".";
+import { ImageUpload } from "./ImageUpload";
 
 interface ExtensionKitProps {
-  provider?: HocuspocusProvider | null
-  userId?: string
-  userName?: string
-  userColor?: string
+  provider?: HocuspocusProvider | null;
+  userId?: string;
+  userName?: string;
+  userColor?: string;
 }
 
-export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionKitProps) => [
+export const ExtensionKit = ({
+  provider,
+  userId,
+  userName = "Maxi",
+}: ExtensionKitProps) => [
   Document,
   Columns,
   TaskList,
   TaskItem.configure({
     nested: true,
   }),
-  AiWriter.configure({
-    authorId: userId,
-    authorName: userName,
-  }),
-  AiImage.configure({
-    authorId: userId,
-    authorName: userName,
-  }),
+
   Column,
   Selection,
   Heading.configure({
@@ -87,10 +73,6 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
     history: false,
     codeBlock: false,
   }),
-  CodeBlockLowlight.configure({
-    lowlight,
-    defaultLanguage: null,
-  }),
   TextStyle,
   FontSize,
   FontFamily,
@@ -102,43 +84,16 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
   Highlight.configure({ multicolor: true }),
   Underline,
   CharacterCount.configure({ limit: 50000 }),
-  TableOfContents,
-  TableOfContentsNode,
   ImageUpload.configure({
     clientId: provider?.document?.clientID,
   }),
   ImageBlock,
-  FileHandler.configure({
-    allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
-    onDrop: (currentEditor, files, pos) => {
-      files.forEach(async () => {
-        const url = await API.uploadImage()
-
-        currentEditor.chain().setImageBlockAt({ pos, src: url }).focus().run()
-      })
-    },
-    onPaste: (currentEditor, files) => {
-      files.forEach(async () => {
-        const url = await API.uploadImage()
-
-        return currentEditor
-          .chain()
-          .setImageBlockAt({ pos: currentEditor.state.selection.anchor, src: url })
-          .focus()
-          .run()
-      })
-    },
-  }),
-  Emoji.configure({
-    enableEmoticons: true,
-    suggestion: emojiSuggestion,
-  }),
   TextAlign.extend({
     addKeyboardShortcuts() {
-      return {}
+      return {};
     },
   }).configure({
-    types: ['heading', 'paragraph'],
+    types: ["heading", "paragraph"],
   }),
   Subscript,
   Superscript,
@@ -150,7 +105,7 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
   Placeholder.configure({
     includeChildren: true,
     showOnlyCurrent: false,
-    placeholder: () => '',
+    placeholder: () => "",
   }),
   SlashCommand,
   Focus,
@@ -158,8 +113,8 @@ export const ExtensionKit = ({ provider, userId, userName = 'Maxi' }: ExtensionK
   BlockquoteFigure,
   Dropcursor.configure({
     width: 2,
-    class: 'ProseMirror-dropcursor border-black',
+    class: "ProseMirror-dropcursor border-black",
   }),
-]
+];
 
-export default ExtensionKit
+export default ExtensionKit;

@@ -49,18 +49,18 @@ export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
   return (
     <EditorContext.Provider value={providerValue}>
       <div className="flex h-full" ref={menuContainerRef}>
-        <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} editor={editor} />
+        {/* <Sidebar isOpen={leftSidebar.isOpen} onClose={leftSidebar.close} editor={editor} /> */}
         <div className="relative flex flex-col flex-1 h-full overflow-hidden">
-          <EditorHeader
+          {/* <EditorHeader
             characters={characterCount.characters()}
             collabState={collabState}
             users={displayedUsers}
             words={characterCount.words()}
             isSidebarOpen={leftSidebar.isOpen}
             toggleSidebar={leftSidebar.toggle}
-          />
+          /> */}
           <EditorContent editor={editor} className="flex-1 overflow-y-auto" />
-          <ContentItemMenu editor={editor} />
+          {/* <ContentItemMenu editor={editor} /> */}
           <LinkMenu editor={editor} appendTo={menuContainerRef} />
           <TextMenu editor={editor} />
           <ColumnsMenu editor={editor} appendTo={menuContainerRef} />
@@ -69,7 +69,7 @@ export const BlockEditor = ({ aiToken, ydoc, provider }: TiptapProps) => {
           <ImageBlockMenu editor={editor} appendTo={menuContainerRef} />
         </div>
       </div>
-      {aiState.isAiLoading && aiLoaderPortal}
+      {/* {aiState.isAiLoading && aiLoaderPortal} */}
     </EditorContext.Provider>
   )
 }
